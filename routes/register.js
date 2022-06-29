@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var argon2 = require("argon2");
+const bcrypt = require("bcryptjs");
 var dbClient = require("../utils/connection");
 
 router.post("/", async (req, res) => {
@@ -13,12 +13,12 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ message: "User already exists" });
   }
 
-  const hash = await argon2.hash(req.body.password);
+  const passwordHash = await bcrypt.hashSync(req.body.password, 10);
 
   const data = {
     username: req.body.username,
     email: req.body.email,
-    password: hash,
+    password: passwordHash,
   };
 
   const response = await db.collection("users").insertOne(data);
