@@ -5,7 +5,7 @@ const dbClient = async () => {
     useNewUrlParser: true,
   });
   await client.connect();
-  return client.db("socialdb");
+  return client.db(process.env.DATABASE_NAME);
 };
 
 module.exports = dbClient;

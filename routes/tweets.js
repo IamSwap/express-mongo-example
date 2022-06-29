@@ -26,7 +26,6 @@ router.post("/", async (req, res) => {
   const tweet = await db
     .collection("tweets")
     .findOne({ _id: response.insertedId });
-
   res.json(tweet);
 });
 

@@ -14,7 +14,6 @@ router.post("/", async (req, res) => {
   }
 
   const hash = await argon2.hash(req.body.password);
-  console.log(hash);
 
   const data = {
     username: req.body.username,
