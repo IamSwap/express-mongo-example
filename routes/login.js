@@ -20,7 +20,15 @@ router.post("/", async (req, res) => {
     return res.status(403).json({ message: "password did not match!" });
   }
 
-  return res.json({ message: "Welcome aboard!" });
+  const response = await db
+    .collection("users")
+    .findOne({ username: user.username });
+
+  const token = await db.collection("tokens").findOne({
+    userId: response._id,
+  });
+
+  return res.status(200).json({ token: token.token });
 });
 
 module.exports = router;

@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const bcrypt = require("bcryptjs");
 var dbClient = require("../utils/connection");
+const jwt = require("jsonwebtoken");
 
 router.post("/", async (req, res) => {
   const db = await dbClient();
@@ -26,7 +27,24 @@ router.post("/", async (req, res) => {
     .collection("users")
     .findOne({ _id: response.insertedId });
 
-  return res.json(user);
+  const token = jwt.sign(
+    { id: user._id, username: user.username, password: user.password },
+    process.env.SECRET_KEY,
+    {
+      expiresIn: "7d",
+    }
+  );
+
+  const insertToken = await db.collection("tokens").insertOne({
+    token: token,
+    userId: user._id,
+  });
+
+  const findToken = await db.collection("tokens").findOne({
+    _id: insertToken.insertedId,
+  });
+
+  return res.status(201).json({ token: findToken.token });
 });
 
 module.exports = router;
