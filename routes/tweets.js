@@ -1,6 +1,9 @@
 var express = require("express");
 var router = express.Router();
 var dbClient = require("../utils/connection");
+var isAuthorized = require("../middleware/isAuthorized");
+
+router.use(isAuthorized);
 
 router.get("/", async (req, res) => {
   const db = await dbClient();
