@@ -44,7 +44,10 @@ router.post("/", async (req, res) => {
     _id: insertToken.insertedId,
   });
 
-  return res.status(201).json({ token: findToken.token });
+  return res
+    .status(201)
+    .cookie({ token: findToken.token }, { httpOnly: true })
+    .json({ token: findToken.token });
 });
 
 module.exports = router;
